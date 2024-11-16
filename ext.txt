@@ -1,0 +1,9 @@
+
+Test credentials
+Admin
+Schooladmin
+Vegas@2024
+
+Teacher
+Schoolteacher
+Miami@2024

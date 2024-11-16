@@ -1,0 +1,5 @@
+{
+  "extends": "typescript-config/react-library.json",
+  "include": [".", "../../src/layouts/use-layout.ts"],
+  "exclude": ["dist", "build", "node_modules"]
+}

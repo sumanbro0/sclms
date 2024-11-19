@@ -5,6 +5,7 @@ import { routes } from "@/config/routes";
 import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
+import { LoadingSpinner } from "packages/isomorphic-core/src/ui/file-upload/upload-zone";
 import { useEffect } from "react";
 
 // Define public routes that don't require authentication
@@ -25,7 +26,6 @@ export function RestrictedAuthProvider({
   const [userRole, setRole] = useAtom(userRoleAtom);
   useEffect(() => {
     const role = getRole();
-    console.log(role);
     // Don't do anything while authentication is still loading
     if (status === "loading") return;
 
@@ -52,11 +52,7 @@ export function RestrictedAuthProvider({
 
   // Show loading state while checking authentication
   if (status === "loading") {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   return <>{children}</>;

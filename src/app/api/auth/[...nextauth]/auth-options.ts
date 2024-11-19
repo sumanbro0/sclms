@@ -1,13 +1,12 @@
 import { type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
+import CognitoProvider from "next-auth/providers/cognito";
 import { env } from '@/env.mjs';
 import isEqual from 'lodash/isEqual';
 import { pagesOptions } from './pages-options';
-import CognitoProvider from "next-auth/providers/cognito";
 
 export const authOptions: NextAuthOptions = {
-  // debug: true,
   pages: {
     ...pagesOptions,
   },
@@ -19,27 +18,27 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       return {
         ...session,
+        // Include access token in session
+        access_token: token.access_token,
         user: {
           ...session.user,
           id: token.idToken as string,
         },
       };
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
+      if (account) {
+        // Handle initial sign-in
+        token.access_token = account.access_token;
+        token.idToken = account.id_token;
+      }
       if (user) {
-        // return user as JWT
+        // Include user details in token
         token.user = user;
       }
       return token;
     },
     async redirect({ url, baseUrl }) {
-      // const parsedUrl = new URL(url, baseUrl);
-      // if (parsedUrl.searchParams.has('callbackUrl')) {
-      //   return `${baseUrl}${parsedUrl.searchParams.get('callbackUrl')}`;
-      // }
-      // if (parsedUrl.origin === baseUrl) {
-      //   return url;
-      // }
       return baseUrl;
     },
   },
@@ -50,6 +49,7 @@ export const authOptions: NextAuthOptions = {
       credentials: {},
       async authorize(credentials: any) {
         const user = {
+          id: '1', // Added id field
           email: 'admin@admin.com',
           password: 'admin',
         };

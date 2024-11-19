@@ -1,6 +1,7 @@
-'use client';
+"use client";
 
-import { SessionProvider } from 'next-auth/react';
+import { RestrictedAuthProvider } from "@/providers/auth-provider";
+import { SessionProvider } from "next-auth/react";
 
 export default function AuthProvider({
   children,
@@ -9,5 +10,9 @@ export default function AuthProvider({
   children: React.ReactNode;
   session: any;
 }): React.ReactNode {
-  return <SessionProvider session={session}>{children}</SessionProvider>;
+  return (
+    <SessionProvider session={session}>
+      <RestrictedAuthProvider>{children}</RestrictedAuthProvider>
+    </SessionProvider>
+  );
 }
